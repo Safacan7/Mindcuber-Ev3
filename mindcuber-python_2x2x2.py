@@ -1,4 +1,5 @@
 # Source: https://github.com/Pedro-Beirao/mindcuber-python/blob/main/mindcuber-python.py
+#credit to: https://github.com/Steve-Zheng/mindcuber-python-ev3
 
 
 from doctest import master

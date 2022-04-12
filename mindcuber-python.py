@@ -1,3 +1,5 @@
+#credit to: https://github.com/Steve-Zheng/mindcuber-python-ev3
+
 from turtle import speed
 import ev3_dc as ev3
 import time

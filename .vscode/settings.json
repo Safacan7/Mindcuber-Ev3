@@ -1,0 +1,8 @@
+{
+    "code-runner.runInTerminal": true,
+    "workbench.editorAssociations": {
+        "*.json": "default"
+    },
+    "editor.autoClosingBrackets": "never",
+    "files.eol": "\n"
+}

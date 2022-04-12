@@ -1,11 +1,13 @@
 # Source: https://github.com/Pedro-Beirao/mindcuber-python/blob/main/mindcuber-python.py
 
 
+from doctest import master
 import ev3_dc as ev3
 import time
 
+from kociemba_2x2 import solver
 from scanner.scan_2x2x2 import Cube
-import kociemba
+
 
 
 def wait():
@@ -27,20 +29,12 @@ def hold():
     # rotate.start_move_to(120, speed=10, brake=True)
     # wait()
 
-# larga as layers de cima
-
 
 def release():
     rotate.start_move_to(20, speed=35, brake=True)
     wait()
     rotate.start_move_for(1, speed=5, direction=-1)
     wait()
-
-# roda o cubo usando o braco
-# "dir" = quantas vezes roda
-# "release" = -1 : roda e segura
-# "release" = 1 : roda e larga
-# "release" = 0 : roda
 
 
 def rot(dir=1, release=0):
@@ -50,26 +44,19 @@ def rot(dir=1, release=0):
     if release == 0 or release == 1:
         cube.push_arm_away()
 
-
-# roda a plataform
-# "dir" = 1 ou -1 : sentido ponteiros relogio ou contra relogio
-# "times" = quantas vezes roda (rodar 3 vezes é igual a rodar uma vez no sentido contrario)
 def turn(dir=1, times=1):
 
     if times == 1:
-        turnn.start_move_by(-310*dir, speed=60, brake=True)
-        waitT()
-        turnn.start_move_by(40*dir, speed=60, brake=True)
+        turnn.start_move_by(-270*dir, speed=60, brake=True)
         waitT()
     if times == 2:
-        turnn.start_move_by(-580*dir, speed=60, brake=True)
-        waitT()
-        turnn.start_move_by(40*dir, speed=60, brake=True)
+        turnn.start_move_by(-540*dir, speed=60, brake=True)
         waitT()
     if times == 3:
-        turnn.start_move_by(310*dir, speed=60, brake=True)
+        turnn.start_move_by(270*dir, speed=60, brake=True)
         waitT()
-        turnn.start_move_by(-40*dir, speed=60, brake=True)
+    if times == 4:
+        turnn.start_move_by(1080*dir, speed=100, brake=True)
         waitT()
 
 
@@ -93,7 +80,7 @@ def solve():
         print("Step: "+str(stepCount) + " of "+str(len(steps)) + " - " + step)
         stepCount += 1
 
-        if step.endswith("'"):
+        if step.endswith("3"):
             turnTimes = 3
         elif step.endswith("2"):
             turnTimes = 2
@@ -279,15 +266,27 @@ if __name__ == "__main__":
 
     cube = Cube(ev3device, rotate, turnn)
 
+    patternchoice = input("Enter 1 to solve.")
+
+    while patternchoice != '1':
+        patternchoice = input("Invalid input! Please enter again: ")
+
+    print("Please insert cube!")
+
     while True:
         if ultrasonic.distance < 1.5:
             break
         time.sleep(0.1)
 
+    print("Cube detected!")
+    time.sleep(1)
+
+    timeItTakes = time.time()
     cubestr = cube.scan()
-    stepstr = kociemba.solve(cubestr)
-
+    if patternchoice == '1':
+        stepstr = solver.solve(cubestr)
+        
+    print(stepstr)
     solve()
-    # rot(1,1)
-
-    cube.disable_brake()
+    turn(dir=1,times=4)
+    time.sleep(5)

@@ -1,6 +1,4 @@
-# Source: https://github.com/Pedro-Beirao/mindcuber-python/blob/main/mindcuber-python.py
-
-
+from turtle import speed
 import ev3_dc as ev3
 import time
 
@@ -26,13 +24,6 @@ def release():
     rotate.start_move_for(1, speed=5, direction=-1)
     wait()
 
-# roda o cubo usando o braco
-# "dir" = quantas vezes roda
-# "release" = -1 : roda e segura
-# "release" = 1 : roda e larga
-# "release" = 0 : roda
-
-
 def rot(dir=1, release=0):
     # print(dir, release)
     for i in range(dir):
@@ -48,26 +39,18 @@ def hold_cube():
         rotate.start_move_to(100, speed=30)
     cube.wait_flipper()
 
-# roda a plataform
-# "dir" = 1 ou -1 : sentido ponteiros relogio ou contra relogio
-# "times" = quantas vezes roda (rodar 3 vezes é igual a rodar uma vez no sentido contrario)
-
-
 def turn(dir=1, times=1):
     if times == 1:
-        turnn.start_move_by(-310*dir, speed=30, brake=True)
-        waitT()
-        turnn.start_move_by(40*dir, speed=30, brake=True)
+        turnn.start_move_by(-270*dir, speed=100, brake=True)
         waitT()
     if times == 2:
-        turnn.start_move_by(-580*dir, speed=30, brake=True)
-        waitT()
-        turnn.start_move_by(40*dir, speed=30, brake=True)
+        turnn.start_move_by(-540*dir, speed=100, brake=True)
         waitT()
     if times == 3:
-        turnn.start_move_by(310*dir, speed=30, brake=True)
+        turnn.start_move_by(270*dir, speed=100, brake=True)
         waitT()
-        turnn.start_move_by(-40*dir, speed=30, brake=True)
+    if times == 4:
+        turnn.start_move_by(2160*dir, speed=100, brake=True)
         waitT()
 
 
@@ -265,12 +248,6 @@ def solve():
 
     release()
 
-    # jukebox = ev3.Jukebox(ev3_obj=ev3device)
-    # jukebox.song(ev3.TRIAD, volume=20).start()
-    # jukebox.change_color(ev3.LED_RED_FLASH)
-    # time.sleep(5)
-    # jukebox.change_color(ev3.LED_GREEN)
-
 
 if __name__ == "__main__":
     ev3device = ev3.EV3(protocol=ev3.USB, host='00:16:53:83:D8:4D')
@@ -280,9 +257,9 @@ if __name__ == "__main__":
     ultrasonic = ev3.Ultrasonic(ev3.PORT_1, ev3_obj=ev3device)
 
     cube = Cube(ev3device, rotate, turnn)
-    patternchoice = input("Enter 1 to solve. Enter 2 for checkerboard. Enter 3 for cube in cube in cube: ")
+    patternchoice = input("Enter 1 to solve. Enter 2 for checkerboard. Enter 3 for cube in cube in cube. Enter 4 for cross:")
 
-    while patternchoice != '1' and patternchoice != '2' and patternchoice != '3':
+    while patternchoice != '1'and patternchoice != '2' and patternchoice != '3' and patternchoice != '4':
         patternchoice = input("Invalid input! Please enter again: ")
 
     print("Please insert cube!")
@@ -303,9 +280,10 @@ if __name__ == "__main__":
         stepstr = kociemba.solve(cubestr,"UDUDUDUDURLRLRLRLRFBFBFBFBFDUDUDUDUDLRLRLRLRLBFBFBFBFB")
     elif patternchoice == '3':
         stepstr = kociemba.solve(cubestr,"LUBUUBBBBDDDRRDFRDRRRRFFRFDFDRFDDFFFBLULLUUUULBULBBLLL")
+    elif patternchoice == '4':
+        stepstr = kociemba.solve(cubestr,"DUDUUUDUDBRBRRRBRBLFLFFFLFLUDUDDDUDUFLFLLLFLFRBRBBBRBR")
+
     print(stepstr)
     solve()
-
-    # rot(1,1)
-
-    cube.disable_brake()
+    turn(dir=1,times=4)
+    time.sleep(5)

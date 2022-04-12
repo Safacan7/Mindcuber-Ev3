@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 import ev3_dc as ev3
-from time import sleep
+from time import sleep, time
 from scanner.read_rgb import RGB
 from rubikscolorresolver import resolve_colors
 
@@ -79,8 +79,12 @@ class Cube():
         print("Motors initialized")
 
     def calibrate_rgb(self):
+        self.rotate.start_move_to(45*self.rotate_ratio, speed=40, brake=True)
+        sleep(2)
         self.white = self.rgb.read_rgb(calibrate=True)
+        self.rotate.start_move_to(0*self.rotate_ratio, speed=40, brake=True)
         print("White: ", self.white)
+        sleep(2)
 
     def scan(self):
         self.scan_face(1)
@@ -125,7 +129,7 @@ class Cube():
                 self.hold_cube_pos, speed=30, brake=True)
             self.wait_flipper()
 
-        self.flipper.start_move_to(185, speed=40, brake=True)
+        self.flipper.start_move_to(185, speed=100, brake=True)
         self.wait_flipper()
 
         sleep(0.2)
@@ -152,18 +156,19 @@ class Cube():
             self.push_flipper_away()
 
         i = 1
-        self.put_arm_corner()
+        self.put_color_sensor_edge()
+        if index == 1:
+            self.calibrate_rgb()
+            
 
         self.wait_rotate()
         self.rotate.position = 0
-        self.rotate.start_move_to(360*self.rotate_ratio, speed=25, brake=True)
+        self.rotate.start_move_to(360*self.rotate_ratio, speed=40, brake=True)
 
         while self.rotate.busy:
             current_position = self.rotate.position
-            if current_position >= (i*270)-5:
+            if current_position >= (i*270)-135:
                 # sleep(0.1)
-                if self.k == 0:
-                    self.calibrate_rgb()
                 current_color = self.rgb.read_rgb(self.white)
                 self.colors[str(self.scan_order[self.k])] = current_color
                 print("Face:", index, "current position:",
@@ -180,7 +185,7 @@ class Cube():
             raise ScanError("i is %d..should be 4" % i)
 
         self.wait_rotate()
-        self.rotate.start_move_to(360*self.rotate_ratio, speed=30, brake=True)
+        self.rotate.start_move_to(360*self.rotate_ratio, speed=40, brake=True)
         self.rotate.position = 0
 
     def push_flipper_away(self):
@@ -190,8 +195,8 @@ class Cube():
         self.flipper.stop(brake=True)
         self.flipper.position = 0
 
-    def put_arm_corner(self):
-        self.sensor_arm.start_move_to(-650, speed=30, brake=True)
+    def put_color_sensor_edge(self):
+        self.sensor_arm.start_move_to(-660, speed=50, brake=True)
         self.wait_sensor_arm()
 
     def remove_arm(self):
@@ -217,27 +222,5 @@ if(__name__ == "__main__"):
     turnn = ev3.Motor(ev3.PORT_B, ev3_obj=ev3device)  # big motor (platform)
 
     cube = Cube(ev3device, rotate, turnn)
-    # cube.calibrate_rgb()
-    # cube.scan_face(1)
-
     cube.flip()
-    # cube.scan_face(1)
-
-    # print(cube.colors)
-
-    # cube.flip()
-    # cube.push_flipper_away()
-
-    # cube.rotate.start_move_to(270*cube.rotate_ratio, speed=25, brake=True)
-    # cube.wait_rotate()
-    # cube.put_arm_edge(8)
-
-    # cube.rotate.start_move_to(7*135, speed=25, brake=True)
-    # cube.wait_rotate()
-    # cube.put_arm_corner(7)
-    # input()
-    # cube.rotate.start_move_to(0, speed=50, brake=True)
-    # cube.wait_rotate()
-    # cube.put_arm_corner()
-
     cube.disable_brake()

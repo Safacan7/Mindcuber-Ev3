@@ -106,10 +106,11 @@ class Cube():
         self.flip()
         self.scan_face(6)
 
+        self.rotate_cube(-1, 1)
+        self.flip()
+        self.rotate_cube(-1, 1)
         #self.rotate_cube(-1, 1)
         # self.flip()
-        self.flip()
-        self.flip()
 
         self.push_flipper_away()
         #self.rotate_cube(1, 2)
@@ -129,12 +130,12 @@ class Cube():
                 self.hold_cube_pos, speed=30, brake=True)
             self.wait_flipper()
 
-        self.flipper.start_move_to(185, speed=100, brake=True)
+        self.flipper.start_move_to(185, speed=60, brake=True)
         self.wait_flipper()
 
         sleep(0.2)
 
-        self.flipper.start_move_to(self.hold_cube_pos, speed=40, brake=True)
+        self.flipper.start_move_to(self.hold_cube_pos, speed=20, brake=True)
         #self.flipper.start_move_to(0, speed=30, brake=True)
         self.wait_flipper()
 

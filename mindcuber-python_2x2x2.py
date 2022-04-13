@@ -285,7 +285,7 @@ if __name__ == "__main__":
     timeItTakes = time.time()
     cubestr = cube.scan()
     if patternchoice == '1':
-        stepstr = solver.solve(cubestr)
+        stepstr = solver.solve("RUFDLBLFRFRFUUDRBDLBLDUB")
         
     print(stepstr)
     solve()

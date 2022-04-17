@@ -125,6 +125,7 @@ class Cube():
 
     def flip(self):
         current_position = self.flipper.position
+        self.rotate.stop(brake=True)
         if (current_position <= self.hold_cube_pos-10 or current_position >= self.hold_cube_pos+10):
             self.flipper.start_move_to(
                 self.hold_cube_pos, speed=30, brake=True)
@@ -149,6 +150,7 @@ class Cube():
         self.rotate.start_move_to(
             final_dest, speed=self.rotate_speed, brake=True)
         self.wait_rotate()
+        self.rotate.stop(brake=True)
 
     def scan_face(self, index):
         print("Scanning face", index)
@@ -163,6 +165,7 @@ class Cube():
             
 
         self.wait_rotate()
+        self.rotate.stop(brake=True)
         self.rotate.position = 0
         self.rotate.start_move_to(360*self.rotate_ratio, speed=40, brake=True)
 
@@ -186,6 +189,7 @@ class Cube():
             raise ScanError("i is %d..should be 4" % i)
 
         self.wait_rotate()
+        self.rotate.stop(brake=True)
         self.rotate.start_move_to(360*self.rotate_ratio, speed=40, brake=True)
         self.rotate.position = 0
 

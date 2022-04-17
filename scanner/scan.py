@@ -122,6 +122,7 @@ class Cube():
 
     def flip(self):
         current_position = self.flipper.position
+        self.rotate.stop(brake=True)
         if (current_position <= self.hold_cube_pos-10 or current_position >= self.hold_cube_pos+10):
             self.flipper.start_move_to(self.hold_cube_pos, speed=30)
             self.wait_flipper()
@@ -166,6 +167,7 @@ class Cube():
         i += 1
 
         self.wait_rotate()
+        self.rotate.stop(brake=True)
         self.rotate.position = 0
         self.rotate.start_move_to(360*self.rotate_ratio, speed=27, brake=True)
 
@@ -192,6 +194,7 @@ class Cube():
             raise ScanError("i is %d..should be 9" % i)
 
         self.wait_rotate()
+        self.rotate.stop(brake=True)
         self.rotate.start_move_to(360*self.rotate_ratio, speed=27, brake=True)
         self.rotate.position = 0
 

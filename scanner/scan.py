@@ -122,7 +122,6 @@ class Cube():
 
     def flip(self):
         current_position = self.flipper.position
-        self.rotate.stop(brake=True)
         if (current_position <= self.hold_cube_pos-10 or current_position >= self.hold_cube_pos+10):
             self.flipper.start_move_to(self.hold_cube_pos, speed=30)
             self.wait_flipper()
@@ -132,7 +131,7 @@ class Cube():
 
         sleep(0.2)
 
-        self.flipper.start_move_to(self.hold_cube_pos, speed=60, brake=True)
+        self.flipper.start_move_to(self.hold_cube_pos, speed=30, brake=True)
         self.wait_flipper()
 
     def rotate_cube(self, direction, nb):
